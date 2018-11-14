@@ -1,4 +1,4 @@
-package com.flyingfish.service.account;
+package com.flyingfish.service.account.impl;
 
 import com.flyingfish.converter.AccountConverter;
 import com.flyingfish.dto.AccountDto;
@@ -7,7 +7,7 @@ import com.flyingfish.exception.AccountExistsException;
 import com.flyingfish.infrastructure.error.ErrorCode;
 import com.flyingfish.infrastructure.error.ErrorMsg;
 import com.flyingfish.repository.AccountRepository;
-import com.flyingfish.service.account.impl.IAccountService;
+import com.flyingfish.service.account.IAccountService;
 import com.flyingfish.vo.AccountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

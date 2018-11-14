@@ -1,8 +1,11 @@
 package com.flyingfish.infrastructure.authentication;
 
-import org.springframework.security.oauth2.provider.client.BaseClientDetails;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 8386005252250238113L;
+
     private String username;
     private String password;
 
