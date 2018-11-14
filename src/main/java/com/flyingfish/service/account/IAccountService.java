@@ -1,4 +1,4 @@
-package com.flyingfish.service.account.impl;
+package com.flyingfish.service.account;
 
 import com.flyingfish.dto.AccountDto;
 import com.flyingfish.vo.AccountVo;

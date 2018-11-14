@@ -1,11 +1,10 @@
 package com.flyingfish.infrastructure.config;
 
 import com.flyingfish.infrastructure.authentication.IUserService;
-import com.flyingfish.infrastructure.authentication.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,17 +13,16 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
-    private TokenStore tokenStore;
+    private final static int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 7; // 7 days
+
+    private final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 2; // 2 hours
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -34,6 +32,9 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -45,22 +46,24 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
         clients
                 .inMemory()
                 .withClient("client")
+                .accessTokenValiditySeconds(this.ACCESS_TOKEN_VALIDITY_SECONDS)
+                .refreshTokenValiditySeconds(this.REFRESH_TOKEN_VALIDITY_SECONDS)
                 .secret(this.passwordEncoder.encode("secret"))
-                .authorizedGrantTypes("password", "client_credentials")
+                .authorizedGrantTypes("password", "client_credentials", "refresh_token")
                 .scopes("app");
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-                .tokenStore(this.tokenStore)
+                .tokenStore(this.tokenStore())
                 .authenticationManager(this.authenticationManager)
                 .userDetailsService(this.userService);
     }
 
     @Bean
     public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
+        return new RedisTokenStore(this.redisConnectionFactory);
     }
 
     @Bean
