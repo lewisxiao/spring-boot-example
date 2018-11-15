@@ -13,6 +13,5 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
     @Transactional
     void clear();
 
-    @Query
-    Account findByEmailEquals(String email);
+    Account findByUsernameEquals(String username);
 }

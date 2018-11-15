@@ -20,7 +20,7 @@ public class AccountController {
 
     @PostMapping("/register")
     public Response register(@RequestBody @Valid AccountDto accountDto) {
-        AccountVo vo = accountService.createAccount(accountDto);
+        AccountVo vo = this.accountService.createAccount(accountDto);
 
         return new Response(vo);
     }
