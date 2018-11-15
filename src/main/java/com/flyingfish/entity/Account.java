@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class Account extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +14,7 @@ public class Account extends BaseModel {
     private String salt;
 
     @NotEmpty
-    private String email;
+    private String username;
 
     @NotEmpty
     private String password;
@@ -35,12 +35,12 @@ public class Account extends BaseModel {
         this.salt = salt;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

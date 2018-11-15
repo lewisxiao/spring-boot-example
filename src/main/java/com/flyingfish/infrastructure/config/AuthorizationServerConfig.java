@@ -1,5 +1,6 @@
 package com.flyingfish.infrastructure.config;
 
+import com.flyingfish.infrastructure.authentication.ClientService;
 import com.flyingfish.infrastructure.authentication.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,21 +37,17 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
 
+    @Autowired
+    private ClientService clientService;
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.passwordEncoder(this.passwordEncoder);
+        security.allowFormAuthenticationForClients().passwordEncoder(this.passwordEncoder);
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .inMemory()
-                .withClient("client")
-                .accessTokenValiditySeconds(this.ACCESS_TOKEN_VALIDITY_SECONDS)
-                .refreshTokenValiditySeconds(this.REFRESH_TOKEN_VALIDITY_SECONDS)
-                .secret(this.passwordEncoder.encode("secret"))
-                .authorizedGrantTypes("password", "client_credentials", "refresh_token")
-                .scopes("app");
+        clients.withClientDetails(this.clientService).jdbc().passwordEncoder(this.passwordEncoder);
     }
 
     @Override

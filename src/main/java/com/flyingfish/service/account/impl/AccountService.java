@@ -19,19 +19,19 @@ public class AccountService implements IAccountService {
 
     @Override
     public AccountVo createAccount(AccountDto accountDto) {
-        if (this.isAccountExists(accountDto.getEmail())) {
+        if (this.isAccountExists(accountDto.getUsername())) {
             throw new AccountExistsException(ErrorMsg.ACCOUNT_EMAIL_EXISTS, ErrorCode.ACCOUNT_EMAIL_EXISTS);
         }
 
         Account account = AccountConverter.dtoToEntity(accountDto);
-        account = accountRepository.save(account);
+        account = this.accountRepository.save(account);
         AccountVo accountVo = AccountConverter.entityToVo(account);
 
         return accountVo;
     }
 
-    private boolean isAccountExists(String email) {
-        Account account = accountRepository.findByEmailEquals(email);
+    private boolean isAccountExists(String username) {
+        Account account = this.accountRepository.findByUsernameEquals(username);
 
         if (account == null) {
             return false;
