@@ -6,10 +6,6 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class Account extends BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     @NotEmpty
     private String salt;
 
@@ -18,14 +14,6 @@ public class Account extends BaseModel {
 
     @NotEmpty
     private String password;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getSalt() {
         return salt;
