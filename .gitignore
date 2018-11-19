@@ -6,3 +6,9 @@ out
 gen
 *.log
 *.gz
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+bin/
